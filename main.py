@@ -5,6 +5,7 @@ from bson.objectid import ObjectId
 from query.behaviour_query import lstBehaviourQueryByPigAIId
 from query.event_query import lstEventQueryByFarmId
 from query.pen_query import lstPenByFarmId
+from query.weighttype_query import searchWeighttype
 from util.http import failedResponse, successResponse
 from bson import json_util
 from query.farm_query import lstFarmQueryByOwnerId
@@ -247,6 +248,24 @@ def deletePen(penId):
 		print("Oops!", e.__class__, " error when execute highlightID API")
 		print("Next entry.")
 		return make_response(failedResponse("Error when execute api calculate highlight ID", "Exception"),500)
+
+
+# WEIGHTTYPE ---
+@app.route("/weighttypes/", methods=["GET"])
+def getWeightTypeByFarmId():
+	try:
+		name = request.args.get('name')
+		print(name)
+		res = weighttypes_collection.aggregate(searchWeighttype(name))
+		print('success')
+		c = []
+		for i in res:
+			c.append(i)
+		return make_response(successResponse(c))
+	except Exception as e:
+		print("Oops!", e.__class__, " error when execute getWeightTypeByFarmId")
+		print("Next entry.")
+		return make_response(failedResponse("Error when execute api getWeightTypeByFarmId", "Exception"),500)
 
 
 
